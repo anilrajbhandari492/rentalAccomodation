@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Maintenance Requests</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+.popup {
+padding: 10px;
+margin-bottom: 15px;
+border-radius: 6px;
+text-align: center;
+}
+
+.popup.error {
+background: #ffe6e6;
+color: #cc0000;
+}
+
+.popup.success {
+background: #e6ffe6;
+color: #008000;
+}
+
+.maintenance-form-box {
+background: white;
+padding: 25px;
+border: 1px solid #ddd;
+max-width: 600px;
+margin-bottom: 30px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+<div class="logo">
+<img src="{{ url_for('static', filename='images/RentEase.png') }}" height="40">
+</div>
+
+<div class="nav-buttons">
+<a href="/tenant"><button class="nav-btn">Dashboard</button></a>
+<a href="/my-visits"><button class="nav-btn">My Visits</button></a>
+<a href="/profile"><button class="nav-btn">Profile</button></a>
+<a href="/logout"><button class="nav-btn">Logout</button></a>
+</div>
+
+</header>
+
+
+<section class="maintenance-section">
+
+<h2>Submit Maintenance Request</h2>
+
+{% if message %}
+<div class="popup {{ 'error' if 'error' in message.lower() else 'success' }}">
+{{ message }}
+</div>
+{% endif %}
+
+{% if no_property %}
+
+<div class="popup error">
+You cannot submit a maintenance request because you are not currently living in any property.
+</div>
+
+{% else %}
+
+<div class="maintenance-form-box">
+
+<form method="POST">
+
+<label>Describe the Issue</label>
+<textarea name="issue_description" rows="4" required></textarea>
+
+<button class="primary-btn">Submit Request</button>
+
+</form>
+
+</div>
+
+{% endif %}
+
+</section>
+
+
+<section class="maintenance-history">
+
+<h2>My Maintenance Requests</h2>
+
+<table class="visit-table">
+
+<tr>
+<th>Issue</th>
+<th>Date Submitted</th>
+<th>Status</th>
+<th>Owner Response</th>
+</tr>
+
+{% if requests %}
+
+{% for request in requests %}
+
+<tr>
+
+<td>{{ request.issue_description }}</td>
+
+<td>{{ request.created_at }}</td>
+
+<td>{{ request.request_status }}</td>
+
+<td>
+{% if request.request_status == "rejected" %}
+<span style="color:red;">{{ request.owner_response }}</span>
+
+{% elif request.request_status == "accepted" %}
+<span style="color:green;">{{ request.owner_response }}</span>
+
+{% else %}
+<span style="color:gray;">Pending</span>
+{% endif %}
+</td>
+
+</tr>
+
+{% endfor %}
+
+{% else %}
+
+<tr>
+<td colspan="3" style="text-align:center;">No maintenance requests submitted yet.</td>
+</tr>
+
+{% endif %}
+
+</table>
+
+</section>
+
+</body>
+</html>

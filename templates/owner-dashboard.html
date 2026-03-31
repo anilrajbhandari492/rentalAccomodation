@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Owner Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+
+.owner-banner {
+background: url("{{ url_for('static', filename='images/Ownerdashboardbanner.png') }}") no-repeat center;
+background-size: cover;
+height: 250px;
+display: flex;
+align-items: center;
+justify-content: center;
+color: white;
+position: relative;
+}
+
+.owner-banner::before {
+content: "";
+position: absolute;
+width: 100%;
+height: 100%;
+background: rgba(0,0,0,0.5);
+}
+
+.owner-banner h1 {
+position: relative;
+font-size: 36px;
+}
+
+.section { padding: 40px; }
+
+.property-card {
+background: white;
+border-radius: 10px;
+padding: 15px;
+box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+transition: 0.3s;
+}
+
+.property-card img {
+width: 100%;
+border-radius: 8px;
+}
+
+.exit-highlight {
+border: 3px solid red;
+background: #ffe6e6;
+}
+
+.visit-table th {
+background: #333;
+color: white;
+}
+
+textarea {
+width: 100%;
+padding: 8px;
+margin-bottom: 5px;
+border-radius: 5px;
+border: 1px solid #ccc;
+}
+
+.exit-box {
+margin-top: 10px;
+padding: 10px;
+background: #fff3cd;
+border-radius: 8px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+<div class="logo">
+<img src="{{ url_for('static', filename='images/RentEase.png') }}" height="60">
+</div>
+
+<div class="nav-buttons">
+<a href="/owner"><button class="nav-btn">Dashboard</button></a>
+<a href="/add-property"><button class="nav-btn">Add Property</button></a>
+<a href="/owner-maintenance"><button class="nav-btn">Maintenance</button></a>
+<a href="/profile"><button class="nav-btn">Profile</button></a>
+<a href="/logout"><button class="nav-btn">Logout</button></a>
+</div>
+
+</header>
+
+
+<section class="owner-banner">
+<h1>Manage Your Properties</h1>
+</section>
+
+
+<section class="section">
+
+<h2>My Property Listings</h2>
+
+<div class="property-grid">
+
+{% for property in properties %}
+
+<div class="property-card {% if property.exit_id %} exit-highlight {% endif %}">
+
+{% if property.file_path %}
+<img src="/images/{{ property.file_path }}">
+{% endif %}
+
+<h3>{{ property.title }}</h3>
+<p>{{ property.city }}</p>
+<p>£{{ property.price_per_month }}</p>
+
+<!-- 🟢 OCCUPIED -->
+{% if property.availability_status == "occupied" %}
+<p style="color:green;"><strong>● Occupied</strong></p>
+{% endif %}
+
+<a href="/edit-property/{{ property.property_id }}">
+<button>Edit</button>
+</a>
+
+<!-- 🔴 EXIT REQUEST SECTION -->
+{% if property.exit_id %}
+
+<div class="exit-box">
+
+<p style="color:red;"><strong>⚠ Exit Requested</strong></p>
+
+<p><strong>Reason:</strong> {{ property.reason }}</p>
+
+<form method="POST" action="/handle-exit/{{ property.exit_id }}">
+
+<textarea name="response" placeholder="Write response..." required></textarea>
+
+<button name="action" value="accept" class="accept-btn">Accept Exit</button>
+<button name="action" value="reject" class="reject-btn">Reject</button>
+
+</form>
+
+</div>
+
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</section>
+
+
+<section class="section">
+
+<h2>Tenant Visit Requests</h2>
+
+<table class="visit-table">
+
+<tr>
+<th>Property</th>
+<th>Tenant</th>
+<th>Date</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+{% for visit in visits %}
+
+<tr>
+
+<td>{{ visit.title }}</td>
+<td>{{ visit.full_name }}</td>
+<td>{{ visit.requested_date }}</td>
+<td>{{ visit.visit_status }}</td>
+
+<td>
+
+{% if visit.visit_status == "requested" %}
+
+<form method="POST" action="/handle-visit/{{ visit.visit_id }}">
+
+<textarea name="message" placeholder="Write message / reason" required></textarea>
+
+<select name="action">
+<option value="accept">Accept</option>
+<option value="reject">Reject</option>
+</select>
+
+<input type="date" name="scheduled_date">
+
+<br><br>
+
+<button class="accept-btn">Submit</button>
+
+</form>
+
+{% elif visit.visit_status == "accepted" %}
+
+<form method="POST" action="/complete-visit/{{ visit.visit_id }}">
+
+<select name="outcome">
+<option value="completed">Completed</option>
+<option value="not_completed">Not Completed</option>
+</select>
+
+<br><br>
+
+<button class="primary-btn">Update</button>
+
+</form>
+
+{% else %}
+No Action
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</section>
+
+</body>
+</html>
