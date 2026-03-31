@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Property Details</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+.media-gallery {
+display: flex;
+flex-wrap: wrap;
+gap: 15px;
+}
+
+.media-gallery img,
+.media-gallery video {
+width: 300px;
+height: 200px;
+object-fit: cover;
+border-radius: 10px;
+}
+
+.owner-box {
+background: #f9f9f9;
+padding: 15px;
+border-radius: 8px;
+margin-top: 20px;
+}
+
+.popup {
+padding: 10px;
+margin-top: 15px;
+border-radius: 6px;
+text-align: center;
+}
+
+.popup.error {
+background: #ffe6e6;
+color: #cc0000;
+}
+</style>
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+<div class="logo">
+<img src="{{ url_for('static', filename='images/RentEase.png') }}" height="40">
+</div>
+
+<div class="nav-buttons">
+
+{% if session.get("user_id") %}
+
+{% if session.get("role") == "tenant" %}
+<a href="/tenant"><button class="nav-btn">Dashboard</button></a>
+{% elif session.get("role") == "owner" %}
+<a href="/owner"><button class="nav-btn">Dashboard</button></a>
+{% endif %}
+
+<a href="/profile"><button class="nav-btn">Profile</button></a>
+<a href="/logout"><button class="nav-btn">Logout</button></a>
+
+{% else %}
+
+<a href="/login"><button class="nav-btn">Login</button></a>
+<a href="/register"><button class="nav-btn">Register</button></a>
+
+{% endif %}
+
+</div>
+
+</header>
+
+
+<section class="property-details">
+
+<!-- 🔥 MEDIA -->
+<div class="media-section">
+
+<h3>Property Media</h3>
+
+<div class="media-gallery">
+
+{% if media %}
+
+{% for item in media %}
+
+{% if item.media_type == "image" %}
+<img src="/images/{{ item.file_path }}">
+{% elif item.media_type == "video" %}
+<video controls>
+<source src="/videos/{{ item.file_path }}" type="video/mp4">
+</video>
+{% endif %}
+
+{% endfor %}
+
+{% else %}
+<p>No media available</p>
+{% endif %}
+
+</div>
+
+</div>
+
+
+<!-- DETAILS -->
+<div class="details-section">
+
+<h2>{{ property.title }}</h2>
+
+<p><strong>Location:</strong> {{ property.city }}</p>
+
+<p><strong>Price:</strong> £{{ property.price_per_month }} per month</p>
+
+<p><strong>Description:</strong></p>
+<p>{{ property.description }}</p>
+
+
+<!-- 🔥 OWNER INFO -->
+<div class="owner-box">
+
+<h3>Owner Details</h3>
+
+<p><strong>Name:</strong> {{ owner.full_name }}</p>
+<p><strong>Profession:</strong> {{ owner.profession }}</p>
+<p><strong>Rating:</strong> ⭐ {{ owner.rating }} ({{ owner.total_reviews }} reviews)</p>
+
+</div>
+
+
+<!-- 🔥 VISIT BUTTON LOGIC -->
+
+{% if not session.get("user_id") %}
+
+<div class="popup error">
+Please login or register to request a property visit.
+</div>
+
+<a href="/login"><button class="primary-btn">Login</button></a>
+<a href="/register"><button class="secondary-btn">Register</button></a>
+
+{% elif session.get("role") != "tenant" %}
+
+<div class="popup error">
+Only tenants can request property visits.
+</div>
+
+{% else %}
+
+<a href="/visit/{{ property.property_id }}">
+<button class="primary-btn">Request Property Visit</button>
+</a>
+
+{% endif %}
+
+</div>
+
+</section>
+
+</body>
+</html>
