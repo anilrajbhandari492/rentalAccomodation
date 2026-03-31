@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Request Property Visit</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+.popup {
+padding: 12px;
+border-radius: 6px;
+margin-bottom: 15px;
+text-align: center;
+}
+
+.popup.error {
+background: #ffe6e6;
+color: #cc0000;
+}
+
+.popup.info {
+background: #eef2f6;
+color: #333;
+}
+</style>
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+<div class="logo">
+<img src="{{ url_for('static', filename='images/RentEase.png') }}" height="40">
+</div>
+
+<div class="nav-buttons">
+
+{% if session.get("user_id") %}
+
+{% if session.get("role") == "tenant" %}
+<a href="/tenant"><button class="nav-btn">Dashboard</button></a>
+{% elif session.get("role") == "owner" %}
+<a href="/owner"><button class="nav-btn">Dashboard</button></a>
+{% endif %}
+
+<a href="/profile"><button class="nav-btn">Profile</button></a>
+<a href="/logout"><button class="nav-btn">Logout</button></a>
+
+{% else %}
+
+<a href="/login"><button class="nav-btn">Login</button></a>
+<a href="/register"><button class="nav-btn">Register</button></a>
+
+{% endif %}
+
+</div>
+
+</header>
+
+
+<section class="visit-container">
+
+<div class="visit-card">
+
+<h2>Request Property Visit</h2>
+
+<!-- ❌ NOT LOGGED IN -->
+{% if not session.get("user_id") %}
+
+<div class="popup error">
+You must login or register to request a property visit.
+</div>
+
+<a href="/login">
+<button class="primary-btn">Login</button>
+</a>
+
+<a href="/register">
+<button class="secondary-btn">Create Account</button>
+</a>
+
+<!-- ❌ NOT TENANT -->
+{% elif session.get("role") != "tenant" %}
+
+<div class="popup error">
+Only tenants are allowed to request property visits.
+</div>
+
+<!-- ✅ TENANT -->
+{% else %}
+
+{% if message %}
+<div class="popup {{ 'error' if 'error' in message.lower() else 'info' }}">
+{{ message }}
+</div>
+{% endif %}
+
+<form method="POST">
+
+<label>Select Preferred Date</label>
+<input type="date" name="requested_date" required>
+
+<label>Select Preferred Time</label>
+<select name="requested_time">
+<option>09:00 AM</option>
+<option>11:00 AM</option>
+<option>01:00 PM</option>
+<option>03:00 PM</option>
+<option>05:00 PM</option>
+</select>
+
+<button class="primary-btn">Submit Visit Request</button>
+
+</form>
+
+{% endif %}
+
+</div>
+
+</section>
+
+</body>
+</html>
