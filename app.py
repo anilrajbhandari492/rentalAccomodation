@@ -3,12 +3,6 @@
 # SUJAN - VISIT + BOOKING + AGREEMENT (CURRENT PLACEHOLDER)
 # =========================================================
 
-# VISIT REQUEST
-@app.route("/visit/<int:property_id>", methods=["GET","POST"])
-def visit_request(property_id):
-    if request.method == "POST":
-        return redirect("/tenant")
-    return render_template("visit-request.html")
 =======
 from flask import Flask, render_template, request, redirect, session, send_from_directory
 import sqlite3
@@ -35,3 +29,10 @@ def get_db():
 
 
 >>>>>>> 8f772653f0f3932574599db578f483d9fce14a4f
+
+# VISIT REQUEST
+@app.route("/visit/<int:property_id>", methods=["GET","POST"])
+def visit_request(property_id):
+    if request.method == "POST":
+        return redirect("/tenant")
+    return render_template("visit-request.html")
