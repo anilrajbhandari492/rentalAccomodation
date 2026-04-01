@@ -1,9 +1,5 @@
 <<<<<<< HEAD
-# =========================================================
-# SUJAN - VISIT + BOOKING + AGREEMENT (CURRENT PLACEHOLDER)
-# =========================================================
 
-=======
 from flask import Flask, render_template, request, redirect, session, send_from_directory
 import sqlite3
 import os
