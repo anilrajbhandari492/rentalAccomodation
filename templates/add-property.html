@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Add Property</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+.popup {
+padding: 10px;
+margin-bottom: 15px;
+border-radius: 6px;
+text-align: center;
+}
+
+.popup.error {
+background: #ffe6e6;
+color: #cc0000;
+}
+
+.popup.success {
+background: #e6ffe6;
+color: #008000;
+}
+
+.note {
+font-size: 13px;
+color: #666;
+margin-top: 5px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+<div class="logo">
+<img src="{{ url_for('static', filename='images/RentEase.png') }}" height="40">
+</div>
+
+<div class="nav-buttons">
+<a href="/owner"><button class="nav-btn">Dashboard</button></a>
+<a href="/profile"><button class="nav-btn">Profile</button></a>
+<a href="/logout"><button class="nav-btn">Logout</button></a>
+</div>
+
+</header>
+
+<section class="form-section">
+
+<div class="form-container">
+
+<h2>Add Property</h2>
+
+{% if message %}
+<div class="popup {{ 'error' if 'error' in message.lower() else 'success' }}">
+{{ message }}
+</div>
+{% endif %}
+
+<form method="POST" enctype="multipart/form-data">
+
+<label>Property Title</label>
+<input type="text" name="title" required>
+
+<label>Property Type</label>
+<select name="property_type">
+<option value="Residential">Residential</option>
+<option value="Commercial">Commercial</option>
+</select>
+
+<label>Rent (£ / month)</label>
+<input type="number" name="rent" required>
+
+<label>BHK</label>
+<select name="bhk">
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+</select>
+
+<label>Area (sq ft)</label>
+<input type="number" name="area">
+
+<label>Description</label>
+<textarea name="description"></textarea>
+
+<label>Address</label>
+<input type="text" name="address">
+
+<label>City</label>
+<input type="text" name="city">
+
+<label>Zip Code</label>
+<input type="text" name="postcode">
+
+<!-- 🔥 IMAGE UPLOAD -->
+<label>Upload Images (Max 5)</label>
+<input type="file" name="images" accept="image/*" multiple>
+<div class="note">You can upload up to 5 images.</div>
+
+<!-- 🔥 VIDEO UPLOAD -->
+<label>Upload Videos (Max 2)</label>
+<input type="file" name="videos" accept="video/*" multiple>
+<div class="note">You can upload up to 2 videos.</div>
+
+<button class="primary-btn">Create Property</button>
+
+</form>
+
+</div>
+
+</section>
+
+</body>
+</html>

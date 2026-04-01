@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Rental Accommodation System</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+
+.banner {
+position: relative;
+height: 450px;
+background: url("{{ url_for('static', filename='images/banner.png') }}") no-repeat center;
+background-size: cover;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.banner::before {
+content: "";
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0,0,0,0.5);
+}
+
+.banner-content {
+position: relative;
+display: flex;
+justify-content: space-between;
+width: 90%;
+color: white;
+}
+
+.banner-left {
+max-width: 40%;
+}
+
+.banner-left h1 {
+font-size: 42px;
+margin-bottom: 10px;
+}
+
+.banner-left p {
+font-size: 20px;
+}
+
+.banner-center {
+text-align: center;
+background: rgba(0,0,0,0.6);
+padding: 30px;
+border-radius: 10px;
+}
+
+.banner-center h2 {
+font-size: 32px;
+margin-bottom: 10px;
+}
+
+.banner-center p {
+margin-bottom: 20px;
+}
+
+.banner-buttons button {
+margin: 5px;
+}
+
+.logo img {
+height: 50px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+<div class="logo">
+<img src="{{ url_for('static', filename='images/RentEase.png') }}" class="logo-img">
+</div>
+
+<div class="nav-buttons">
+
+{% if session.get("user_id") %}
+
+{% if session.get("role") == "tenant" %}
+<a href="/tenant"><button class="nav-btn">Dashboard</button></a>
+{% elif session.get("role") == "owner" %}
+<a href="/owner"><button class="nav-btn">Dashboard</button></a>
+{% endif %}
+
+<a href="/profile"><button class="nav-btn">Profile</button></a>
+<a href="/logout"><button class="nav-btn">Logout</button></a>
+
+{% else %}
+
+<a href="/login"><button class="nav-btn">Login</button></a>
+<a href="/register"><button class="nav-btn">Register</button></a>
+
+{% endif %}
+
+</div>
+
+</header>
+
+
+<!-- 🔥 BANNER -->
+<section class="banner">
+
+<div class="banner-content">
+
+<!-- LEFT TEXT -->
+<div class="banner-left">
+<h1>Find Your Perfect Home</h1>
+<p>Trusted Rentals, Seamless Process</p>
+</div>
+
+<!-- CENTER BOX -->
+<div class="banner-center">
+
+<h2>Find Your Ideal Rental Property</h2>
+
+<p>Search, schedule visits, and manage bookings in one platform</p>
+
+<div class="banner-buttons">
+
+{% if session.get("user_id") %}
+
+{% if session.get("role") == "tenant" %}
+<a href="/tenant">
+<button class="primary-btn">Browse Properties</button>
+</a>
+{% elif session.get("role") == "owner" %}
+<a href="/owner">
+<button class="primary-btn">Go to Dashboard</button>
+</a>
+{% endif %}
+
+{% else %}
+
+<a href="/login">
+<button class="primary-btn">Browse Properties</button>
+</a>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FEATURED -->
+<section class="featured">
+
+<h2>Featured Properties</h2>
+
+<div class="property-grid">
+
+{% for property in properties %}
+
+<div class="property-card">
+
+<img src="/images/{{ property.file_path }}">
+
+<h3>{{ property.title }}</h3>
+
+<p>Location: {{ property.city }}</p>
+
+<p>£{{ property.price_per_month }} / month</p>
+
+<a href="/property/{{ property.property_id }}">
+<button>View Details</button>
+</a>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</section>
+
+<footer>
+<p>Rental Accommodation Management System</p>
+</footer>
+
+</body>
+</html>

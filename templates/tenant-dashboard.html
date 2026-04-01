@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Tenant Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+
+.container {
+max-width: 1100px;
+margin: auto;
+padding: 30px;
+}
+
+/* 🔥 CARD */
+.property-card-large {
+background: white;
+padding: 25px;
+border-radius: 12px;
+box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+/* 🔥 GALLERY */
+.gallery {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 12px;
+margin-bottom: 20px;
+}
+
+.gallery img,
+.gallery video {
+width: 100%;
+height: 200px;
+object-fit: cover;
+border-radius: 8px;
+}
+
+/* 🔥 DETAILS */
+.details {
+text-align: center;
+}
+
+.details h2 {
+margin-bottom: 10px;
+}
+
+.status {
+color: green;
+font-weight: bold;
+margin-top: 10px;
+}
+
+/* 🔥 INFO STRIP */
+.info-strip {
+display: flex;
+justify-content: space-around;
+margin-top: 20px;
+background: #f4f6f8;
+padding: 15px;
+border-radius: 8px;
+}
+
+/* 🔘 BUTTONS */
+.actions {
+text-align: center;
+margin-top: 20px;
+}
+
+.popup {
+background: #ffe6e6;
+padding: 12px;
+border-radius: 8px;
+text-align: center;
+margin-bottom: 15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+<div class="logo">
+<img src="{{ url_for('static', filename='images/RentEase.png') }}" height="45">
+</div>
+
+<div class="nav-buttons">
+<a href="/my-visits"><button class="nav-btn">My Visits</button></a>
+<a href="/maintenance"><button class="nav-btn">Maintenance</button></a>
+<a href="/profile"><button class="nav-btn">Profile</button></a>
+<a href="/logout"><button class="nav-btn">Logout</button></a>
+</div>
+
+</header>
+
+
+<div class="container">
+
+<!-- 🔥 REJECTION POPUP -->
+{% if message %}
+<div class="popup">
+{{ message }}
+<br><br>
+<button onclick="this.parentElement.style.display='none'" class="primary-btn">OK</button>
+</div>
+
+<script>
+if (window.location.search.includes("exit=rejected")) {
+    window.history.replaceState({}, document.title, "/tenant");
+}
+</script>
+{% endif %}
+
+
+{% if current_property %}
+
+<h2 style="text-align:center;">My Current Property</h2>
+
+<div class="property-card-large">
+
+<!-- 🔥 GALLERY -->
+<div class="gallery">
+
+{% for item in media %}
+
+{% if item.media_type == "image" %}
+<img src="/images/{{ item.file_path }}">
+
+{% elif item.media_type == "video" %}
+<video controls>
+<source src="/videos/{{ item.file_path }}" type="video/mp4">
+</video>
+{% endif %}
+
+{% endfor %}
+
+</div>
+
+<!-- 🔥 DETAILS -->
+<div class="details">
+
+<h2>{{ current_property.title }}</h2>
+
+<p><strong>📍 Location:</strong> {{ current_property.city }}</p>
+
+<p><strong>💰 Rent:</strong> £{{ current_property.price_per_month }} / month</p>
+
+<p class="status">● You are currently staying here</p>
+
+</div>
+
+<!-- 🔥 EXIT STATUS -->
+{% if exit_request %}
+
+<div style="
+background:#fff3cd;
+padding:15px;
+border-radius:10px;
+margin-top:15px;
+text-align:center;
+font-weight:bold;
+">
+
+⏳ Exit request submitted. Waiting for owner approval.
+
+</div>
+
+{% endif %}
+
+<!-- 🔥 FEEDBACK -->
+{% if exit_approved and not feedback_given %}
+
+<div style="margin-top:20px; text-align:center;">
+
+<h3>⭐ Please leave feedback for owner</h3>
+
+<a href="/feedback/{{ current_property.owner_id }}">
+<button class="primary-btn">Give Feedback</button>
+</a>
+
+</div>
+
+{% endif %}
+
+<!-- 🔥 INFO -->
+<div class="info-strip">
+
+<div>
+<p><strong>📅 Stay Duration</strong></p>
+<p>{{ display_days }}</p>
+</div>
+
+</div>
+
+<!-- 🔥 ACTIONS -->
+<div class="actions">
+
+<a href="/maintenance">
+<button class="primary-btn">Maintenance</button>
+</a>
+
+<br><br>
+
+{% if not exit_request %}
+<a href="/exit-property">
+<button class="reject-btn">Exit Property</button>
+</a>
+{% else %}
+<button class="reject-btn" disabled>Exit Requested</button>
+{% endif %}
+
+</div>
+
+</div>
+
+{% else %}
+
+<!-- 🔥 BROWSE PROPERTIES -->
+
+<h2>Available Properties</h2>
+
+<div class="property-grid">
+
+{% for property in properties %}
+
+<div class="property-card">
+
+{% if property.file_path %}
+<img src="/images/{{ property.file_path }}">
+{% else %}
+<img src="{{ url_for('static', filename='images/banner.png') }}">
+{% endif %}
+
+<h3>{{ property.title }}</h3>
+<p>{{ property.city }}</p>
+<p>£{{ property.price_per_month }}</p>
+
+<a href="/property/{{ property.property_id }}">
+<button>View Details</button>
+</a>
+
+<a href="/visit/{{ property.property_id }}">
+<button class="secondary-btn">Request Visit</button>
+</a>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+
+</div>
+
+</body>
+</html>

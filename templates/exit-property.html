@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Exit Property</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+
+.warning-box {
+background: #ffe6e6;
+padding: 15px;
+border-radius: 10px;
+color: #cc0000;
+margin-bottom: 15px;
+text-align: center;
+}
+
+.success-box {
+background: #e6ffe6;
+padding: 15px;
+border-radius: 10px;
+color: #008000;
+margin-bottom: 15px;
+text-align: center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+<div class="logo">
+<img src="{{ url_for('static', filename='images/RentEase.png') }}" height="40">
+</div>
+
+<div class="nav-buttons">
+<a href="/tenant"><button class="nav-btn">Dashboard</button></a>
+<a href="/profile"><button class="nav-btn">Profile</button></a>
+<a href="/logout"><button class="nav-btn">Logout</button></a>
+</div>
+
+</header>
+
+
+<section class="form-section">
+
+<div class="form-container">
+
+<h2>Exit Property</h2>
+
+<!-- 🔥 WARNING -->
+<div class="warning-box">
+⚠ Leaving early may result in loss of deposit or penalties.
+</div>
+
+<!-- 🔥 SUCCESS MESSAGE -->
+{% if message %}
+<div class="success-box">
+{{ message }}
+</div>
+{% endif %}
+
+<!-- 🔥 FORM -->
+<form method="POST">
+
+<label>Reason for leaving</label>
+<textarea name="reason" required></textarea>
+
+<br><br>
+
+<button class="primary-btn">Submit Exit Request</button>
+
+</form>
+
+</div>
+
+</section>
+
+</body>
+</html>

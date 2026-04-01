@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Browse Properties</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+.popup {
+padding: 10px;
+margin: 15px auto;
+width: 60%;
+border-radius: 6px;
+text-align: center;
+}
+
+.popup.info {
+background: #eef2f6;
+color: #333;
+}
+</style>
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+<div class="logo">
+<img src="{{ url_for('static', filename='images/RentEase.png') }}" height="40">
+</div>
+
+<div class="nav-buttons">
+<a href="/login"><button class="nav-btn">Login</button></a>
+<a href="/register"><button class="nav-btn">Register</button></a>
+</div>
+
+</header>
+
+<section class="search-section">
+<h2>Browse Available Properties</h2>
+</section>
+
+<!-- 🔥 INFO MESSAGE -->
+<div class="popup info">
+You can explore properties, but login/register is required to request visits.
+</div>
+
+<section class="featured">
+
+<div class="property-grid">
+
+{% if properties %}
+
+{% for property in properties %}
+
+<div class="property-card">
+
+<img src="/images/{{ property.file_path }}">
+
+<h3>{{ property.title }}</h3>
+
+<p><strong>Location:</strong> {{ property.city }}</p>
+
+<p><strong>Price:</strong> £{{ property.price_per_month }} / month</p>
+
+<a href="/property/{{ property.property_id }}">
+<button>View Details</button>
+</a>
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<p style="text-align:center;">No properties available.</p>
+
+{% endif %}
+
+</div>
+
+</section>
+
+<section class="guest-message">
+
+<p>You must register or login to request a property visit.</p>
+
+<a href="/register">
+<button class="primary-btn">Register Now</button>
+</a>
+
+<a href="/login">
+<button class="secondary-btn">Login</button>
+</a>
+
+</section>
+
+</body>
+</html>
